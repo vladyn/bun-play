@@ -1,15 +1,25 @@
+import type { GenerateContentResponse } from "@google/genai";
 import { askAi } from "./ask-ai.ts";
+import { questions } from "./enums/questions.ts";
+import { shuffle } from "./helpers/array.ts";
 
-const server = Bun.serve({
+const server: Bun.Server<undefined> = Bun.serve({
     port: 3000,
 
-    async fetch(req) {
+    async fetch(req: Request): Promise<Response> {
+        const url = new URL(req.url);
+        const question = url.searchParams.get("q") || shuffle(questions)[0].text;
+
+        if (!question) {
+            return new Response("No question provided", { status: 400 });
+        }
+
         const encoder = new TextEncoder();
-        const responseStream = await askAi("what is the meaning of life?");
-        const iterator = responseStream[Symbol.asyncIterator]();
+        const responseStream: AsyncIterable<GenerateContentResponse> = await askAi(question);
+        const iterator: AsyncIterator<GenerateContentResponse> = responseStream[Symbol.asyncIterator]();
 
         const stream = new ReadableStream({
-            async pull(controller) {
+            async pull(controller: ReadableStreamDefaultController):Promise<void> {
                 const { value, done } = await iterator.next();
 
                 if (done) {
