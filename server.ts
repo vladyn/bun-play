@@ -3,7 +3,7 @@ import { askAi } from "./ask-ai.ts";
 import { questions } from "./enums/questions.ts";
 import { shuffle } from "./helpers/array.ts";
 
-const server: Bun.Server<undefined> = Bun.serve({
+export const server: Bun.Server<undefined> = Bun.serve({
     port: 3000,
 
     async fetch(req: Request): Promise<Response> {

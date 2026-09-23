@@ -1,6 +1,7 @@
 import { Example } from "./decorators";
 import { explainAi } from "./explain-ai";
-
+import { server } from "./server.ts";
+server;
 new Example().greet("world");
 
 try {
