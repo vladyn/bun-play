@@ -13,7 +13,9 @@ describe("API response formatting", () => {
 
         expect(response.headers.get("content-type")).toBe("text/html; charset=utf-8");
         expect(response.headers.get("content-security-policy")).toContain("default-src 'none'");
+        expect(response.headers.get("content-security-policy")).toContain("form-action 'self'");
         expect(html).toContain("<h1>Result</h1>");
         expect(html).toContain("<strong>formatted</strong>");
+        expect(html).toContain('name="q" value="hello"');
     });
 });
