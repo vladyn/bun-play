@@ -7,7 +7,16 @@ const allowedTags = [
     "table", "tbody", "td", "th", "thead", "tr", "ul",
 ];
 
-export function renderMarkdownDocument(markdown: string): string {
+function escapeAttribute(value: string): string {
+    return value
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+}
+
+export function renderMarkdownDocument(markdown: string, question = ""): string {
     const rendered = marked.parse(markdown, {
         async: false,
         gfm: true,
@@ -43,6 +52,10 @@ export function renderMarkdownDocument(markdown: string): string {
         :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
         body { margin: 0; background: Canvas; color: CanvasText; }
         main { width: min(52rem, calc(100% - 2rem)); margin: 3rem auto; line-height: 1.65; }
+        form { display: flex; gap: .65rem; margin-bottom: 2rem; }
+        input { min-width: 0; flex: 1; padding: .7rem .85rem; border: 1px solid GrayText; border-radius: .45rem; font: inherit; background: Canvas; color: CanvasText; }
+        button { padding: .7rem 1.1rem; border: 0; border-radius: .45rem; background: ButtonText; color: ButtonFace; font: inherit; font-weight: 600; cursor: pointer; }
+        button:hover { opacity: .85; }
         h1, h2, h3 { line-height: 1.2; margin-top: 1.8em; }
         a { color: LinkText; }
         pre { overflow-x: auto; padding: 1rem; border-radius: .5rem; background: color-mix(in srgb, CanvasText 8%, Canvas); }
@@ -54,7 +67,13 @@ export function renderMarkdownDocument(markdown: string): string {
     </style>
 </head>
 <body>
-    <main>${content}</main>
+    <main>
+        <form method="get" action="/">
+            <input type="search" name="q" value="${escapeAttribute(question)}" aria-label="Question" placeholder="Ask a question" required>
+            <button type="submit">Ask</button>
+        </form>
+        <article>${content}</article>
+    </main>
 </body>
 </html>`;
 }

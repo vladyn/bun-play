@@ -22,10 +22,10 @@ export function createRequestHandler(generate: GenerateMarkdown = askAi) {
             markdown += chunk.text ?? "";
         }
 
-        return new Response(renderMarkdownDocument(markdown), {
+        return new Response(renderMarkdownDocument(markdown, question), {
             headers: {
                 "Content-Type": "text/html; charset=utf-8",
-                "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
+                "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'self'",
                 "X-Content-Type-Options": "nosniff",
             },
         });
